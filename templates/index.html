@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather Forecast</title>
+</head>
+<body>
+    <h1>Weather Forecast</h1>
+
+    <form id="cityForm">
+        <input type="text" id="cityInput" placeholder="Enter city">
+        <button type="submit">Get Forecast</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        const form = document.getElementById('cityForm');
+        const resultDiv = document.getElementById('result');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const cityInput = document.getElementById('cityInput');
+            const city = cityInput.value;
+
+            fetch(`/weather-forecast?city=${city}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        resultDiv.innerHTML = `<p id="error">${data.error}</p>`;
+                    } else {
+                        const graphImage = `<img src="${data.graph_path}" alt="Weather Graph">`;
+                        resultDiv.innerHTML = `<div id="graph">${graphImage}</div>`;
+                    }
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `<p id="error">An error occurred while retrieving the forecast.</p>`;
+                    console.error(error);
+                });
+        });
+    </script>
+</body>
+</html>
